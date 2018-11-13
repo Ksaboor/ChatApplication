@@ -1,4 +1,4 @@
-# websocket-demo
+# Websocket-demo
 
 This is a Chat Demo using Websockets.
 
@@ -11,3 +11,9 @@ regular HTTP connection with the server
 and then upgrading it to a bidirectional websocket 
 connection by sending an Upgrade header.
 
+
+
+# Tech/Framework
+* Java 8
+* SpringBoot 2.1.0
+* Vue.js CLI 3.0
