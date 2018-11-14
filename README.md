@@ -12,6 +12,11 @@ and then upgrading it to a bidirectional websocket
 connection by sending an Upgrade header.
 
 
+## Controller
+ Using the our methods from WebSocketConfig class. 
+ All the messages sent from clients with a destination 
+ starting with /app will be routed to these message 
+ handling methods annotated with @MessageMapping.
 
 # Tech/Framework
 * Java 8
