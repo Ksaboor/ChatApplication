@@ -6,7 +6,7 @@ var usernameForm = document.querySelector('#usernameForm');
 var messageForm = document.querySelector('#messageForm');
 var messageInput = document.querySelector('#message');
 var messageArea = document.querySelector('#messageArea');
-var connectingElement = document.querySelector('#.connecting');
+var connectingElement = document.querySelector('.connecting');
 
 var stompClient = null;
 var username = null;
@@ -21,36 +21,41 @@ function connect(event) {
 
     if (username) {
         usernamePage.classList.add('hidden');
-        chatPage.classList.add('hidden');
+        chatPage.classList.remove('hidden');
 
-        var socket = new SocketJS('/ws');
+        var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
 
-        stompClient.connect({}, onConnection, onError);
+        stompClient.connect({}, onConnected, onError);
     }
     event.preventDefault();
 }
 
-function onConnection() {
-    //Subcribe to the public topic
+
+function onConnected() {
+    // Subscribe to the Public Topic
     stompClient.subscribe('/topic/public', onMessageReceived);
 
-    //Tell your username to the server
-    stompClient.send("/app/chat.addUser", {}, JSON.stringify({ sender: username, type: 'JOIN' }))
+    // Tell your username to the server
+    stompClient.send("/app/chat.addUser", {},
+        JSON.stringify({
+            sender: username,
+            type: 'JOIN'
+        })
+    )
 
     connectingElement.classList.add('hidden');
-
 }
+
 
 function onError(error) {
-    connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh the page to try again!';
+    connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
     connectingElement.style.color = 'red';
-
 }
+
 
 function sendMessage(event) {
     var messageContent = messageInput.value.trim();
-
     if (messageContent && stompClient) {
         var chatMessage = {
             sender: username,
@@ -63,6 +68,7 @@ function sendMessage(event) {
     event.preventDefault();
 }
 
+
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
 
@@ -70,10 +76,10 @@ function onMessageReceived(payload) {
 
     if (message.type === 'JOIN') {
         messageElement.classList.add('event-message');
-        message.content = message.sender + 'joined!';
+        message.content = message.sender + ' joined!';
     } else if (message.type === 'LEAVE') {
         messageElement.classList.add('event-message');
-        message.content = message.sender + 'Left!';
+        message.content = message.sender + ' left!';
     } else {
         messageElement.classList.add('chat-message');
 
@@ -89,9 +95,10 @@ function onMessageReceived(payload) {
         usernameElement.appendChild(usernameText);
         messageElement.appendChild(usernameElement);
     }
+
     var textElement = document.createElement('p');
     var messageText = document.createTextNode(message.content);
-    textElement.appendChild(textElement);
+    textElement.appendChild(messageText);
 
     messageElement.appendChild(textElement);
 
@@ -99,15 +106,15 @@ function onMessageReceived(payload) {
     messageArea.scrollTop = messageArea.scrollHeight;
 }
 
+
 function getAvatarColor(messageSender) {
     var hash = 0;
-    for (var index = 0; index < messageSender.length; index++) {
-        hash = 31 * hash + messageSender.charCodeAt(index);
-
+    for (var i = 0; i < messageSender.length; i++) {
+        hash = 31 * hash + messageSender.charCodeAt(i);
     }
-    var i = Math.abs(hash % colors.length);
-    return colors[i];
+    var index = Math.abs(hash % colors.length);
+    return colors[index];
 }
 
-usernameForm.addEventListener('submit', connect, true);
-usernamePage.addEventListener('submit', sendMessage, true);
+usernameForm.addEventListener('submit', connect, true)
+messageForm.addEventListener('submit', sendMessage, true)
