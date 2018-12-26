@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.example</groupId>
-	<artifactId>ChatApplication</artifactId>
+	<artifactId>chatapplication-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>ChatApplication</name>
+	<name>chatapplication</name>
 	<description>Demo project using Spring Boot</description>
 
 	<parent>
